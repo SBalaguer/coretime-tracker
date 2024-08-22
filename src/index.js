@@ -4,10 +4,21 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+//Context Imports
+import { ApiConnect } from './Context/ApiConnect'
+import { Coretime } from './Context/Coretime'
+import { Relay } from './Context/Relay'
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ApiConnect>
+      <Relay>
+        <Coretime>
+          <App />
+        </Coretime>
+      </Relay>
+    </ApiConnect>
   </React.StrictMode>
 );
 

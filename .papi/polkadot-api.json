@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "descriptorPath": ".papi/descriptors",
+  "entries": {
+    "ksmcoretime": {
+      "wsUrl": "wss://kusama-coretime-rpc.polkadot.io",
+      "metadata": ".papi/metadata/ksmcoretime.scale"
+    },
+    "ksm": {
+      "chain": "ksmcc3",
+      "metadata": ".papi/metadata/ksm.scale"
+    }
+  }
+}
