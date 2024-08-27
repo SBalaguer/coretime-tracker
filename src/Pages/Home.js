@@ -81,17 +81,19 @@ export default function Home({ paras, workload, untilList, sale }) {
           const hasRenewed = renewedOther.filter(_item => _item.para === item.para).length ? true : false
           
           if(!hasRenewed){
-            const active = workloadData.length ? true : false;
-            const core = workloadData.length ? workloadData[0].keyArgs[0] : null;
-            const fullOption = {
+            const active = true;
+            workloadData.map(_item => {
+              const core = _item.keyArgs[0]
+              const fullOption = {
                 paraID: item.para,
                 core,
                 active,
                 until: item.until
-            }
+              } 
+              _selectedParas.push(fullOption)
+            })
             
             _selectedParaIDs.push(item.para)
-            _selectedParas.push(fullOption)
           }
 
         })
