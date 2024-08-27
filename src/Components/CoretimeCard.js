@@ -29,7 +29,7 @@ const CoretimeCard = ({core, until, para, active, onRemove}) => {
             <div className="flex items-center">
               <span className="text-sm text-gray-500 mr-4">{`Relay Block ${block ? formatBlock(block) : "Fetching..."}`}</span>
               <button
-                onClick={() => onRemove(para)}
+                onClick={() => onRemove(para, core)}
                 className="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
               >
                 <XIcon className="h-5 w-5" />

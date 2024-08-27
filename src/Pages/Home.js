@@ -16,19 +16,36 @@ export default function Home({ paras, workload, untilList, sale }) {
     const handleSelect = (option) => {
       if (!selectedParas.includes(option)) {
         const workloadData = workload.data.filter(item => option === item.value[0].assignment.value)
-        const active = workloadData.length ? true : false;
-        const core = workloadData.length ? workloadData[0].keyArgs[0] : null;
+        
         const until = untilList.filter(item => option === item.para)
-
-        const fullOption = {
-            paraID: option,
-            core,
-            active,
-            until: until.length ? until[0].until : null
+        
+        if (workloadData.length) {
+          const active = true;
+          const paraWorkload = []
+          workloadData.map(item => {
+            const core = item.keyArgs[0]
+            const fullOption = {
+              paraID: option,
+              core,
+              active,
+              until: until.length ? until[0].until : null
+            } 
+            paraWorkload.push(fullOption)
+          })
+          setSelectedOptions([...selectedOptions, ...paraWorkload])
+        } else {
+          const active = false
+          const core = null;
+          const fullOption = {
+              paraID: option,
+              core,
+              active,
+              until: until.length ? until[0].until : null
+          }
+          setSelectedOptions([...selectedOptions, fullOption])  
         }
 
         setSelectedParas([...selectedParas, option])
-        setSelectedOptions([...selectedOptions, fullOption])
       }
       setSearchTerm('')
     }
@@ -37,8 +54,9 @@ export default function Home({ paras, workload, untilList, sale }) {
         setSearchTerm(e)
     }
 
-    const handleRemove = (option) => {
-      setSelectedOptions(selectedOptions.filter(item => item.paraID !== option))
+    const handleRemove = (para, core) => {
+      setSelectedOptions(selectedOptions.filter(item => item.paraID !== para))
+      setSelectedParas(selectedParas.filter(item => item !== para))
     }   
 
     const handleToggle = () => {
@@ -51,23 +69,33 @@ export default function Home({ paras, workload, untilList, sale }) {
 
     const handleShowUrgentRenewals = () => {
       const urgentRenewals = untilList.filter(item => item.until === sale.data.region_begin)
+      const renewedOther = untilList.filter(item => item.until === sale.data.region_end)
+
+      console.log("ur", urgentRenewals)
+      console.log("rd", renewedOther)
+      
+
       let _selectedParas = []
       let _selectedParaIDs = []
+
       if (urgentRenewals.length) {
         urgentRenewals.map(item => {
           const workloadData = workload.data.filter(_item => item.para === _item.value[0].assignment.value)
-          const active = workloadData.length ? true : false;
-          const core = workloadData.length ? workloadData[0].keyArgs[0] : null;
-
-          const fullOption = {
-              paraID: item.para,
-              core,
-              active,
-              until: item.until
-          }
+          const hasRenewed = renewedOther.filter(_item => _item.para === item.para).length ? true : false
           
-          _selectedParaIDs.push(item.para)
-          _selectedParas.push(fullOption)
+          if(!hasRenewed){
+            const active = workloadData.length ? true : false;
+            const core = workloadData.length ? workloadData[0].keyArgs[0] : null;
+            const fullOption = {
+                paraID: item.para,
+                core,
+                active,
+                until: item.until
+            }
+            
+            _selectedParaIDs.push(item.para)
+            _selectedParas.push(fullOption)
+          }
 
         })
       }
