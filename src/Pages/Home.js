@@ -70,9 +70,6 @@ export default function Home({ paras, workload, untilList, sale }) {
     const handleShowUrgentRenewals = () => {
       const urgentRenewals = untilList.filter(item => item.until === sale.data.region_begin)
       const renewedOther = untilList.filter(item => item.until === sale.data.region_end)
-
-      console.log("ur", urgentRenewals)
-      console.log("rd", renewedOther)
       
 
       let _selectedParas = []
