@@ -32,9 +32,8 @@ const App = () => {
       setUntilList(_untilList)
     }
   },[allowedRenewals, leases, reservations])
-
   return (
-    <Home paras={serchList} workload={workload} untilList={untilList} />
+    <Home paras={serchList} workload={workload} untilList={untilList} sale={sale}/>
   );
 }
 

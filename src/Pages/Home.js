@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { SearchIcon } from 'lucide-react'
+import { SearchIcon, AlertCircle } from 'lucide-react'
 
 import CoretimeCard from './../Components/CoretimeCard'
 import Toggle from './../Components/Toggle'
 
-export default function Home({ paras, workload, untilList }) {
+export default function Home({ paras, workload, untilList, sale }) {
     const [searchTerm, setSearchTerm] = useState('')
     const [selectedOptions, setSelectedOptions] = useState([])
     const [selectedParas, setSelectedParas] = useState([])
-    const [isPolkadot, setIsPolkadot] = useState(false) 
+    const [isPolkadot, setIsPolkadot] = useState(false)
+    const [isUrgent, setIsUrgent] = useState(false) 
 
     const filteredResults = paras ? (isPolkadot ? paras.polkadot : paras.kusama).filter(result => result.toString().toLowerCase().includes(searchTerm.toLowerCase())) : [];
     
@@ -37,7 +38,6 @@ export default function Home({ paras, workload, untilList }) {
     }
 
     const handleRemove = (option) => {
-        console.log(option)
       setSelectedOptions(selectedOptions.filter(item => item.paraID !== option))
     }   
 
@@ -45,6 +45,36 @@ export default function Home({ paras, workload, untilList }) {
       // Polkadot must upgrade before we can make it available.
       // setIsPolkadot(!isPolkadot)
       // setSelectedOptions([])
+    }
+
+    //todo: de-duplicate this code.
+
+    const handleShowUrgentRenewals = () => {
+      const urgentRenewals = untilList.filter(item => item.until === sale.data.region_begin)
+      let _selectedParas = []
+      let _selectedParaIDs = []
+      if (urgentRenewals.length) {
+        urgentRenewals.map(item => {
+          const workloadData = workload.data.filter(_item => item.para === _item.value[0].assignment.value)
+          const active = workloadData.length ? true : false;
+          const core = workloadData.length ? workloadData[0].keyArgs[0] : null;
+
+          const fullOption = {
+              paraID: item.para,
+              core,
+              active,
+              until: item.until
+          }
+          
+          _selectedParaIDs.push(item.para)
+          _selectedParas.push(fullOption)
+
+        })
+      }
+
+      setSelectedParas(_selectedParaIDs)
+      setSelectedOptions(_selectedParas)
+
     }
 
     return (
@@ -65,11 +95,11 @@ export default function Home({ paras, workload, untilList }) {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder={paras ? `Search ${isPolkadot ? 'Polkadot' : 'Kusama'} parachains...` : "Fetching data..."}
+                    placeholder={(paras && sale) ? `Search ${isPolkadot ? 'Polkadot' : 'Kusama'} parachains...` : "Fetching data..."}
                     value={searchTerm}
                     onChange={(e) => handleTermSearch(e.target.value)}
                     className="w-full px-6 py-4 text-lg bg-[#1A1A1A] text-white rounded-full focus:outline-none focus:ring-2 focus:ring-[#E6007A] shadow-lg placeholder-gray-400"
-                    disabled={!paras}
+                    disabled={!(paras && sale)}
                   />
                   <SearchIcon className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6" />
                   {searchTerm && (
@@ -89,7 +119,18 @@ export default function Home({ paras, workload, untilList }) {
                       )}
                     </div>
                   )}
-                </div>
+                </div >
+                {sale &&
+                  <div className="flex justify-end mt-2 mr-4">
+                    <button
+                      onClick={handleShowUrgentRenewals}
+                      className="flex items-center text-[#E6007A] hover:text-[#FF3E9A] transition-colors duration-200 focus:outline-none"
+                    >
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      Show urgent renewals
+                    </button>
+                  </div>
+                }
               </div>
               <div className="w-full max-w-3xl mt-4">
                 {selectedOptions.map((option, index) => (
