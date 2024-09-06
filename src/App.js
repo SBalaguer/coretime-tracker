@@ -28,6 +28,7 @@ const App = () => {
   
   useEffect(() => {
     if (allowedRenewals && leases && reservations) {
+      console.log("TUTU", allowedRenewals)
       const _untilList = coreUntil(allowedRenewals.data, leases.data, reservations.data, status.data.last_committed_timeslice)
       setUntilList(_untilList)
     }

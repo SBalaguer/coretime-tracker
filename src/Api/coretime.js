@@ -52,8 +52,9 @@ const getTimeslicePeriod = async (api) => {
     }
 }
 const getAllowedRenewals = async (api) => {
+    console.log(api)
     try{
-        const data = await api.query.Broker.AllowedRenewals.getEntries()
+        const data = await api.query.Broker.PotentialRenewals.getEntries()
         return {status: "success", data}
     } catch (error) {
         return {status: "error", data:error}
